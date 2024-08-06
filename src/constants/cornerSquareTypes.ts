@@ -5,5 +5,9 @@ export default {
   square: "square",
   dottedSquare:"dotted-square",
   extraRounded: "extra-rounded",
-  rightBottomSquare: "right-bottom-square"
+  rightBottomSquare: "right-bottom-square",
+  leftTopSquare: "left-top-square",
+  leftTopCircle: "circle-left-top",
+  rightBottomCircle: "circle-right-bottom",
+  circleInSquare: "circle-in-square",
 } as CornerSquareTypes;
