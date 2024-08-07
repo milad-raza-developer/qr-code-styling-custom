@@ -42,9 +42,15 @@ export default class QRCornerSquare {
       case cornerSquareTypes.rightBottomCircle:
         drawFunction = this._drawCircleRightBottomFlat;
         break;
+      case cornerSquareTypes.peanut:
+        drawFunction = this._drawPeanutShape;
+        break;
       case cornerSquareTypes.circleInSquare:
         drawFunction = this._drawCircleInSquare;
         break;
+      // case cornerSquareTypes.paragonal:
+      //   drawFunction = this._drawParagonalShape;
+      //   break;
       case cornerSquareTypes.dot:
       default:
         drawFunction = this._drawDot;
@@ -233,97 +239,171 @@ export default class QRCornerSquare {
 
   _basicRoundedSquareRightBottomEdge(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
-    const radius = size / 5;
-    const borderWidth = size / 7; // Adjust the border width as needed
-  
+    const radius = size / 4; // Adjust this value to control the rounding radius
+    const innerSquareSize = size / 1.4; // Size of the inner square
+    const innerSquareRadius = innerSquareSize / 4; // Radius for the inner square
+    const innerX = x + (size - innerSquareSize) / 2; // X position for the inner square
+    const innerY = y + (size - innerSquareSize) / 2; // Y position for the inner square
+
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS(
+        // Create the main shape path
+        const path = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
         );
-        this._element.setAttribute("clip-rule", "evenodd");
-        this._element.setAttribute(
+        path.setAttribute("clip-rule", "evenodd");
+        path.setAttribute(
           "d",
-          `M ${x} ${y + radius}` + 
-            `a ${radius} ${radius} 0 0 1 ${radius} ${-radius}` + // Top-left corner arc
-            `h ${size - 2 * radius}` + // Top edge
-            `a ${radius} ${radius} 0 0 1 ${radius} ${radius}` + // Top-right corner arc
-            `v ${size - 2 * radius}` + // Right edge
-            `a ${radius} ${radius} 0 0 1 ${-radius} ${radius}` + // Bottom-right corner arc
-            `h ${-size + radius}` + // Bottom edge
-            `v ${-size + radius}` + // Left edge
-            `a ${radius} ${radius} 0 0 1 ${radius} ${-radius}` + // Bottom-left corner arc
-            `M ${x + borderWidth} ${y + radius}` + 
-            `v ${size - 2 * radius}` + 
-            `a ${radius} ${radius} 0 0 0 ${radius} ${radius}` + 
-            `h ${size - 2 * radius - borderWidth}` + 
-            `a ${radius} ${radius} 0 0 0 ${radius} ${-radius}` + 
-            `v ${-size + 2 * radius}` + 
-            `a ${radius} ${radius} 0 0 0 ${-radius} ${-radius}` + 
-            `h ${-size + 2 * radius - borderWidth}` + 
-            `a ${radius} ${radius} 0 0 0 ${-radius} ${radius}` + 
-            `Z`
+          `M ${x + radius} ${y}` + // Start at the top-left rounded corner
+            `H ${x + size - radius}` + // Draw a horizontal line to the right
+            `a ${radius} ${radius} 0 0 1 ${radius} ${radius}` + // Draw the top-right arc
+            `V ${y + size - radius}` + // Draw a vertical line down to the bottom-right flat edge
+            `H ${x + size}` + // Move to the bottom-right flat edge
+            `V ${y + size}` + // Draw a vertical line down to the bottom
+            `H ${x + radius}` + // Draw a horizontal line to the left
+            `a ${radius} ${radius} 0 0 1 -${radius} -${radius}` + // Draw the bottom-left arc
+            `V ${y + radius}` + // Draw a vertical line up to the starting point
+            `a ${radius} ${radius} 0 0 1 ${radius} -${radius}` + // Draw the top-left arc
+            `Z` // Close the path
         );
+        path.setAttribute("fill", "white"); // Set fill to white
+        path.setAttribute("stroke", "black"); // Set the stroke color
+        path.setAttribute("stroke-width", "1"); // Set the stroke width
+        this._element = path;
+
+        // Create the inner square path
+        const innerPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        innerPath.setAttribute("clip-rule", "evenodd");
+        innerPath.setAttribute(
+          "d",
+          `M ${innerX + innerSquareRadius} ${innerY}` + // Start at the top-left rounded corner
+            `H ${innerX + innerSquareSize - innerSquareRadius}` + // Draw a horizontal line to the right
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 ${innerSquareRadius} ${innerSquareRadius}` + // Draw the top-right arc
+            `V ${innerY + innerSquareSize - innerSquareRadius}` + // Draw a vertical line down to the bottom-right flat edge
+            `H ${innerX + innerSquareSize}` + // Move to the bottom-right flat edge
+            `V ${innerY + innerSquareSize}` + // Draw a vertical line down to the bottom
+            `H ${innerX + innerSquareRadius}` + // Draw a horizontal line to the left
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 -${innerSquareRadius} -${innerSquareRadius}` + // Draw the bottom-left arc
+            `V ${innerY + innerSquareRadius}` + // Draw a vertical line up to the starting point
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 ${innerSquareRadius} -${innerSquareRadius}` + // Draw the top-left arc
+            `Z` // Close the path
+        );
+        innerPath.setAttribute("fill", "white"); // Set fill to white for the inner square
+        innerPath.setAttribute("stroke", "black"); // Set the stroke color
+        innerPath.setAttribute("stroke-width", "1"); // Set the stroke width
+
+        // Append the elements to the SVG container
+        const svgContainer = document.querySelector("svg"); // Adjust this selector to match your SVG container
+        if (svgContainer) {
+          svgContainer.appendChild(this._element);
+          svgContainer.appendChild(innerPath);
+        }
       },
     });
   }
-  
 
   _basicRoundedSquareLeftTopEdge(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
-    const radius = size / 5;
+    const radius = size / 4; // Adjust this value to control the rounding radius
+    const innerSquareSize = size / 1.4; // Size of the inner square
+    const innerSquareRadius = innerSquareSize / 4; // Radius for the inner square
+    const innerX = x + (size - innerSquareSize) / 2; // X position for the inner square
+    const innerY = y + (size - innerSquareSize) / 2; // Y position for the inner square
 
     this._rotateFigure({
       ...args,
       draw: () => {
-        this._element = document.createElementNS(
+        // Create the main shape path
+        const path = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "path"
         );
-        this._element.setAttribute("clip-rule", "evenodd");
-        this._element.setAttribute(
+        path.setAttribute("clip-rule", "evenodd");
+        path.setAttribute(
           "d",
-          `M ${x} ${y + size}` +
-            `h ${size - radius}` +
-            `a ${radius} ${radius} 0 0 0 ${-radius} ${radius}` +
-            `v ${-size + radius}` +
-            `h ${-size}` +
-            `z`
+          `M ${x + radius} ${y}` + // Start at the top-left flat edge
+            `H ${x + size - radius}` + // Draw a horizontal line to the right
+            `a ${radius} ${radius} 0 0 1 ${radius} ${radius}` + // Draw the top-right arc
+            `V ${y + size - radius}` + // Draw a vertical line down to the bottom-right
+            `a ${radius} ${radius} 0 0 1 -${radius} ${radius}` + // Draw the bottom-right arc
+            `H ${x + radius}` + // Draw a horizontal line to the left
+            `a ${radius} ${radius} 0 0 1 -${radius} -${radius}` + // Draw the bottom-left arc
+            `V ${y + radius}` + // Draw a vertical line up to the starting point
+            `H ${x}` + // Draw a horizontal line to the left to the starting point
+            `V ${y}` + // Move up to the top to ensure the flat corner is complete
+            `Z` // Close the path
         );
+        path.setAttribute("fill", "white"); // Set fill to white
+        path.setAttribute("stroke", "black"); // Set the stroke color
+        path.setAttribute("stroke-width", "1"); // Set the stroke width
+        this._element = path;
+
+        // Create the inner square path
+        const innerPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        innerPath.setAttribute("clip-rule", "evenodd");
+        innerPath.setAttribute(
+          "d",
+          `M ${innerX + innerSquareRadius} ${innerY}` + // Start at the top-left flat edge
+            `H ${innerX + innerSquareSize - innerSquareRadius}` + // Draw a horizontal line to the right
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 ${innerSquareRadius} ${innerSquareRadius}` + // Draw the top-right arc
+            `V ${innerY + innerSquareSize - innerSquareRadius}` + // Draw a vertical line down to the bottom-right
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 -${innerSquareRadius} ${innerSquareRadius}` + // Draw the bottom-right arc
+            `H ${innerX + innerSquareRadius}` + // Draw a horizontal line to the left
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 -${innerSquareRadius} -${innerSquareRadius}` + // Draw the bottom-left arc
+            `V ${innerY + innerSquareRadius}` + // Draw a vertical line up to the starting point
+            `H ${innerX}` + // Draw a horizontal line to the left to the starting point
+            `V ${innerY}` + // Move up to the top to ensure the flat corner is complete
+            `Z` // Close the path
+        );
+        innerPath.setAttribute("fill", "white"); // Set fill to white for the inner square
+        innerPath.setAttribute("stroke", "black"); // Set the stroke color
+        innerPath.setAttribute("stroke-width", "1"); // Set the stroke width
+
+        // Append the elements to the SVG container
+        const svgContainer = document.querySelector("svg"); // Adjust this selector to match your SVG container
+        if (svgContainer) {
+          svgContainer.appendChild(this._element);
+          svgContainer.appendChild(innerPath);
+        }
       },
     });
   }
 
   _basicCircleInSquare(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
-  const borderWidth = size / 7; // Adjust the border width as needed
-  const circleRadius = size / 2 - borderWidth / 2;
+    const borderWidth = size / 7; // Adjust the border width as needed
+    const circleRadius = size / 2 - borderWidth / 2;
 
-  this._rotateFigure({
-    ...args,
-    draw: () => {
-      this._element = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-      );
-      this._element.setAttribute("fill", "none");
-      this._element.setAttribute(
-        "d",
-        `M ${x} ${y}` +
-          `h ${size}` +
-          `v ${size}` +
-          `h ${-size}` +
-          `z` + // Outer square border
-          `M ${x + size / 2}, ${y + size / 2}` +
-          `m -${circleRadius}, 0` +
-          `a ${circleRadius},${circleRadius} 0 1,0 ${2 * circleRadius},0` +
-          `a ${circleRadius},${circleRadius} 0 1,0 -${2 * circleRadius},0` // Circle in the center
-      );
-    },
-  });
-
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        this._element.setAttribute("fill", "none");
+        this._element.setAttribute(
+          "d",
+          `M ${x} ${y}` +
+            `h ${size}` +
+            `v ${size}` +
+            `h ${-size}` +
+            `z` + // Outer square border
+            `M ${x + size / 2}, ${y + size / 2}` +
+            `m -${circleRadius}, 0` +
+            `a ${circleRadius},${circleRadius} 0 1,0 ${2 * circleRadius},0` +
+            `a ${circleRadius},${circleRadius} 0 1,0 -${2 * circleRadius},0` // Circle in the center
+        );
+      },
+    });
   }
 
   _basicLeftTopCircle(args: BasicFigureDrawArgs): void {
@@ -331,7 +411,7 @@ export default class QRCornerSquare {
     const radius = size / 2;
     const flatEdgeLength = size / 16; // Adjust this value as needed to control the length of the flat edge
     const smallDotRadius = radius / 1.4; // Adjust this value to control the size of the small dot
-  
+
     this._rotateFigure({
       ...args,
       draw: () => {
@@ -358,7 +438,7 @@ export default class QRCornerSquare {
         path.setAttribute("stroke", "black"); // Set the stroke color
         path.setAttribute("stroke-width", "1"); // Set the stroke width
         this._element = path;
-  
+
         // Create the white rounded dot with flat corner
         const smallDot = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -369,7 +449,7 @@ export default class QRCornerSquare {
         smallDot.setAttribute("r", `${smallDotRadius}`); // Radius of the white circle
         smallDot.setAttribute("fill", "white"); // White fill
         smallDot.setAttribute("stroke", "none"); // No stroke
-  
+
         // Append both elements to the SVG container
         const svgContainer = document.querySelector("svg"); // Adjust this selector to match your SVG container
         if (svgContainer) {
@@ -379,28 +459,13 @@ export default class QRCornerSquare {
       },
     });
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   _basicRightBottomCircle(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const radius = size / 2;
     const flatEdgeLength = size / 16; // Adjust this value as needed to control the length of the flat edge
     const smallDotRadius = radius / 1.4; // Adjust this value to control the size of the small dot
-  
+
     this._rotateFigure({
       ...args,
       draw: () => {
@@ -427,7 +492,7 @@ export default class QRCornerSquare {
         path.setAttribute("stroke", "black"); // Set the stroke color
         path.setAttribute("stroke-width", "1"); // Set the stroke width
         this._element = path;
-  
+
         // Create the white rounded dot with flat corner
         const smallDot = document.createElementNS(
           "http://www.w3.org/2000/svg",
@@ -438,7 +503,7 @@ export default class QRCornerSquare {
         smallDot.setAttribute("r", `${smallDotRadius}`); // Radius of the white circle
         smallDot.setAttribute("fill", "white"); // White fill
         smallDot.setAttribute("stroke", "none"); // No stroke
-  
+
         // Append both elements to the SVG container
         const svgContainer = document.querySelector("svg"); // Adjust this selector to match your SVG container
         if (svgContainer) {
@@ -448,6 +513,105 @@ export default class QRCornerSquare {
       },
     });
   }
+
+  _basicPeanutShape(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const radius = size / 3.7; // Adjust this value to control the rounding radius
+    const innerSquareSize = size / 1.4; // Size of the inner square
+    const innerSquareRadius = innerSquareSize / 3.7; // Radius for the inner square
+    const innerX = x + (size - innerSquareSize) / 2; // X position for the inner square
+    const innerY = y + (size - innerSquareSize) / 2; // Y position for the inner square
+
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        // Create the main shape path
+        const path = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        path.setAttribute("clip-rule", "evenodd");
+        path.setAttribute(
+          "d",
+          `M ${x + radius} ${y}` + // Start at the top-left flat edge
+            `H ${x + size - radius}` + // Draw a horizontal line to the right
+            `a ${radius} ${radius} 0 0 1 ${radius} ${radius}` + // Draw the top-right arc
+            `V ${y + size - radius}` + // Draw a vertical line down to the bottom-right flat edge
+            `H ${x + size}` + // Move to the bottom-right flat edge
+            `V ${y + size}` + // Draw a vertical line down to the bottom
+            `H ${x + radius}` + // Draw a horizontal line to the left
+            `a ${radius} ${radius} 0 0 1 -${radius} -${radius}` + // Draw the bottom-left arc
+            `V ${y + radius}` + // Draw a vertical line up to the starting point
+            `H ${x}` + // Move to the top-left flat edge
+            `V ${y}` + // Draw a vertical line up to the top
+            `Z` // Close the path
+        );
+        path.setAttribute("fill", "white"); // Set fill to white
+        path.setAttribute("stroke", "black"); // Set the stroke color
+        path.setAttribute("stroke-width", "1"); // Set the stroke width
+        this._element = path;
+
+        // Create the inner square path
+        const innerPath = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        innerPath.setAttribute("clip-rule", "evenodd");
+        innerPath.setAttribute(
+          "d",
+          `M ${innerX + innerSquareRadius} ${innerY}` + // Start at the top-left flat edge
+            `H ${innerX + innerSquareSize - innerSquareRadius}` + // Draw a horizontal line to the right
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 ${innerSquareRadius} ${innerSquareRadius}` + // Draw the top-right arc
+            `V ${innerY + innerSquareSize - innerSquareRadius}` + // Draw a vertical line down to the bottom-right flat edge
+            `H ${innerX + innerSquareSize}` + // Move to the bottom-right flat edge
+            `V ${innerY + innerSquareSize}` + // Draw a vertical line down to the bottom
+            `H ${innerX + innerSquareRadius}` + // Draw a horizontal line to the left
+            `a ${innerSquareRadius} ${innerSquareRadius} 0 0 1 -${innerSquareRadius} -${innerSquareRadius}` + // Draw the bottom-left arc
+            `V ${innerY + innerSquareRadius}` + // Draw a vertical line up to the starting point
+            `H ${innerX}` + // Move to the top-left flat edge
+            `V ${innerY}` + // Draw a vertical line up to the top
+            `Z` // Close the path
+        );
+        innerPath.setAttribute("fill", "white"); // Set fill to white for the inner square
+        innerPath.setAttribute("stroke", "black"); // Set the stroke color
+        innerPath.setAttribute("stroke-width", "1"); // Set the stroke width
+
+        // Append the elements to the SVG container
+        const svgContainer = document.querySelector("svg"); // Adjust this selector to match your SVG container
+        if (svgContainer) {
+          svgContainer.appendChild(this._element);
+          svgContainer.appendChild(innerPath);
+        }
+      },
+    });
+  }
+
+  // _basicParagonalShape(args: BasicFigureDrawArgs): void {
+  //   const { size, x, y } = args;
+  
+  //   this._rotateFigure({
+  //     ...args,
+  //     draw: () => {
+  //       const element = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  //       element.setAttribute("clip-rule", "evenodd");
+  //       element.setAttribute(
+  //         "d",
+  //         `M ${x + size * 0.2} ${y}` + // Move to the top-left corner
+  //         `L ${x + size * 0.8} ${y}` + // Draw line to top-right corner
+  //         `L ${x + size * 0.9} ${y + size * 0.3}` + // Draw line to right-middle corner
+  //         `L ${x + size * 0.7} ${y + size}` + // Draw line to bottom-right corner
+  //         `L ${x + size * 0.3} ${y + size}` + // Draw line to bottom-left corner
+  //         `L ${x + size * 0.1} ${y + size * 0.7}` + // Draw line to left-middle corner
+  //         `Z` // Close the shape
+  //       );
+  //       element.setAttribute("fill", "black"); // Set fill color to black
+  
+  //       // Append the shape to the parent element
+  //       args.parent.appendChild(element);
+  //     },
+  //   });
+  // }
+  
   
 
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
@@ -477,12 +641,18 @@ export default class QRCornerSquare {
   _drawCircleInSquare({ x, y, size, rotation }: DrawArgs): void {
     this._basicCircleInSquare({ x, y, size, rotation });
   }
-  
+
   _drawCircleLeftTopFlat({ x, y, size, rotation }: DrawArgs): void {
     this._basicLeftTopCircle({ x, y, size, rotation });
   }
-  
+
   _drawCircleRightBottomFlat({ x, y, size, rotation }: DrawArgs): void {
     this._basicRightBottomCircle({ x, y, size, rotation });
   }
+  _drawPeanutShape({ x, y, size, rotation }: DrawArgs): void {
+    this._basicPeanutShape({ x, y, size, rotation });
+  }
+  // _drawParagonalShape({ x, y, size, rotation }: DrawArgs): void {
+  //   this._basicParagonalShape({ x, y, size, rotation });
+  // }
 }
