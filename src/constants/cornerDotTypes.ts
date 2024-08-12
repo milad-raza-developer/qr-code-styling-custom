@@ -7,9 +7,9 @@ export default {
   plus: "plus",
   squareRounded: "square-rounded",
   rightBottomSquare: "square-right-bottom",
-  squareLeftTop: "square-left-top",
+  leaf: "leaf",
   leftTopCircle: "circle-left-top",
-  rightTopCircle: "circle-right-top",
+  rightBottomCircle: "circle-right-bottom",
   diamond: "diamond",
   cross: "cross",
   rhombus: "rhombus"
