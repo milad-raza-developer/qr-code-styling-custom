@@ -3,10 +3,10 @@ import { CornerDotTypes } from "../types";
 export default {
   dot: "dot",
   square: "square",
-  star: "star",
-  plus: "plus",
   squareRounded: "square-rounded",
   rightBottomSquare: "square-right-bottom",
+  star: "star",
+  plus: "plus",
   leaf: "leaf",
   leftTopCircle: "circle-left-top",
   rightBottomCircle: "circle-right-bottom",

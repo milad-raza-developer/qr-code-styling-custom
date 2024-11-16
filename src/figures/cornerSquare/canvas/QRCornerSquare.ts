@@ -224,7 +224,13 @@ export default class QRCornerSquare {
       ...args,
       draw: () => {
         context.beginPath();
-        context.arc(-dotSize, -dotSize, 2.5 * dotSize, Math.PI, -Math.PI / 2);
+        context.arc(
+          -dotSize,
+          -dotSize,
+          2.5 * dotSize,
+          Math.PI * 3,
+          -Math.PI / 2
+        );
         context.lineTo(dotSize, -3.5 * dotSize);
         context.arc(dotSize, -dotSize, 2.5 * dotSize, -Math.PI / 2, 0);
         context.lineTo(3.5 * dotSize, -dotSize);
@@ -294,78 +300,70 @@ export default class QRCornerSquare {
       draw: () => {
         context.beginPath();
 
-        // Flat top-left corner
+        // Outer shape with a flat top-left corner
+        // Move to the start of the flat edge at the top left
         context.moveTo(-3.5 * dotSize, -3.5 * dotSize);
-        context.lineTo(3.5 * dotSize, -3.5 * dotSize);
-
-        context.arc(dotSize, -dotSize, 2.5 * dotSize, -Math.PI / 2, 0);
-        context.lineTo(3.5 * dotSize, dotSize);
-        context.arc(dotSize, dotSize, 2.5 * dotSize, 0, Math.PI / 2);
-        context.lineTo(-dotSize, 3.5 * dotSize);
-
-        context.arc(-dotSize, dotSize, 2.5 * dotSize, Math.PI / 2, Math.PI);
-
-        context.lineTo(-3.5 * dotSize, 3.5 * dotSize);
+        context.lineTo(-dotSize, -3.5 * dotSize); // Horizontal line for the flat edge
+        context.arc(0, 0, size / 2, -Math.PI / 2, -Math.PI / 2, false); // Top-right rounded corner
+        context.arc(0, 0, size / 2, -Math.PI / 2, 0, false); // Bottom-right rounded corner
+        context.arc(0, 0, size / 2, 0, Math.PI / 2, false); // Bottom-left rounded corner
+        context.arc(0, 0, size / 2, Math.PI / 2, Math.PI, false); // Return to the left side
+        context.lineTo(-3.5 * dotSize, dotSize); // Finish flat top-left corner
         context.closePath();
 
-        // Inner cutout with flat top-left corner
-        context.moveTo(-2.5 * dotSize, -2.5 * dotSize);
-        context.lineTo(2.5 * dotSize, -2.5 * dotSize);
-        context.arc(dotSize, -dotSize, 1.5 * dotSize, -Math.PI / 2, 0);
-        context.lineTo(2.5 * dotSize, dotSize);
-        context.arc(dotSize, dotSize, 1.5 * dotSize, 0, Math.PI / 2);
-        context.lineTo(-dotSize, 2.5 * dotSize);
-
-        context.arc(-dotSize, dotSize, 1.5 * dotSize, Math.PI / 2, Math.PI);
-        context.lineTo(-2.5 * dotSize, dotSize);
-
+        // Inner shape with a flat top-left corner
+        context.moveTo(-2.5 * dotSize, -2.5 * dotSize); // Start at inner flat corner
+        context.lineTo(-dotSize, -2.5 * dotSize); // Horizontal line for inner flat edge
+        context.arc(
+          0,
+          0,
+          size / 2 - dotSize,
+          -Math.PI / 2,
+          -Math.PI / 2,
+          false
+        ); // Inner top-right rounded corner
+        context.arc(0, 0, size / 2 - dotSize, -Math.PI / 2, 0, false); // Inner bottom-right rounded corner
+        context.arc(0, 0, size / 2 - dotSize, 0, Math.PI / 2, false); // Inner bottom-left rounded corner
+        context.arc(0, 0, size / 2 - dotSize, Math.PI / 2, Math.PI, false); // Inner return to left
+        context.lineTo(-2.5 * dotSize, dotSize); // Finish inner flat top-left corner
         context.closePath();
       },
     });
   }
 
   _basicRightBottomCircle(args: BasicFigureDrawArgsCanvas): void {
-    const { size, x, y, context } = args;
-    const radius = size / 2;
-    const flatEdgeLength = size / 16; // Adjust this value as needed to control the length of the flat edge
-    const smallDotRadius = radius / 1.4; // Adjust this value to control the size of the small dot
+    const { size, context } = args;
+    const dotSize = size / 7;
 
-    context.save();
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        context.beginPath();
 
-    // Draw the main shape with a flat bottom-right edge
-    context.beginPath();
-    context.arc(x + radius, y + radius, radius, Math.PI, 1.5 * Math.PI); // Draw the top-left arc
-    context.lineTo(x + size - radius, y); // Draw a horizontal line to the right
-    context.arc(
-      x + size - radius,
-      y + radius,
-      radius,
-      1.5 * Math.PI,
-      2 * Math.PI
-    ); // Draw the top-right arc
-    context.lineTo(x + size, y + size - flatEdgeLength); // Draw a vertical line down to the bottom
-    context.lineTo(x + size - flatEdgeLength, y + size); // Draw a horizontal line to the left to the flat edge
-    context.lineTo(x + radius, y + size); // Draw a vertical line up to the bottom-left
-    context.arc(x + radius, y + size - radius, radius, 0, 0.5 * Math.PI); // Draw the bottom-left arc
-    context.closePath();
-    context.strokeStyle = "black"; // Set the stroke color
-    context.lineWidth = 1; // Set the stroke width
-    context.stroke();
+        // Outer shape with a flat bottom-right corner
+        context.moveTo(-size / 2, -size / 2); // Start at the top-left corner
+        context.arc(0, 0, size / 2, Math.PI, -Math.PI / 2, false); // Top-left rounded corner
+        context.arc(0, 0, size / 2, -Math.PI / 2, 0, false); // Top-right rounded corner
+        context.lineTo(size / 2, size / 2); // Flat bottom-right edge
+        context.lineTo(0, size / 2); // Move horizontally to the bottom
+        context.arc(0, 0, size / 2, Math.PI / 2, Math.PI, false); // Bottom-left rounded corner
+        context.closePath();
 
-    // Draw the white rounded dot with a flat corner
-    context.beginPath();
-    context.arc(x + radius, y + radius, smallDotRadius, 0, 2 * Math.PI); // Center dot
-    context.fillStyle = "white"; // White fill
-    context.fill();
-    context.strokeStyle = "none"; // No stroke for the dot
-    context.stroke();
-
-    context.restore();
+        // Inner shape with a flat bottom-right corner
+        context.moveTo(-size / 2 + dotSize, -size / 2 + dotSize); // Start at the top-left corner
+        context.arc(0, 0, size / 2 - dotSize, Math.PI, -Math.PI / 2, false); // Top-left rounded corner
+        context.arc(0, 0, size / 2 - dotSize, -Math.PI / 2, 0, false); // Top-right rounded corner
+        context.lineTo(size / 2 - dotSize, size / 2 - dotSize); // Flat bottom-right edge
+        context.lineTo(0, size / 2 - dotSize); // Move horizontally to the bottom
+        context.arc(0, 0, size / 2 - dotSize, Math.PI / 2, Math.PI, false); // Bottom-left rounded corner
+        context.closePath();
+      },
+    });
   }
 
   _basicCircleInSquare(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
-    const dotSize = size / 14;
+    const dotSize = size / 8;
 
     this._rotateFigure({
       ...args,
@@ -424,8 +422,6 @@ export default class QRCornerSquare {
       },
     });
   }
-
-
 
   _drawDot({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation });
