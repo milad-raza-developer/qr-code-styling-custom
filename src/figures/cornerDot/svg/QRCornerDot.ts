@@ -25,6 +25,9 @@ export default class QRCornerDot {
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
+      case cornerDotTypes.squareGrid:
+        drawFunction = this._drawSquareGrid;
+        break;
       case cornerDotTypes.star:
         drawFunction = this._drawStar;
         break;
@@ -43,9 +46,9 @@ export default class QRCornerDot {
       case cornerDotTypes.rhombus:
         drawFunction = this._drawRhombus;
         break;
-      case cornerDotTypes.leaf:
-        drawFunction = this._drawLead;
-        break;
+      // case cornerDotTypes.leaf:
+      //   drawFunction = this._drawLead;
+      //   break;
       case cornerDotTypes.leftTopCircle:
         drawFunction = this._drawCircleLeftTopEdge;
         break;
@@ -138,7 +141,7 @@ export default class QRCornerDot {
 
   _basicRoundedSquareRightBottomEdge(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
-    const radius = size / 5; // Adjust the radius as needed
+    const radius = size / 3; // Adjust the radius as needed
 
     this._rotateFigure({
       ...args,
@@ -170,59 +173,38 @@ export default class QRCornerDot {
     });
   }
 
-  _basicLeaf(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
-    const extension = size / 4; // Adjust the extension as needed
-    const cornerRadius = size / 10; // Adjust the corner radius as needed
-
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        const path = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "path"
-        );
-        const d = `
-        M ${x - size / 2.2 - extension},${
-          y - size / 2.2 - extension
-        }  // Move to the top left corner
-        L ${x + size / 2.2},${y - size / 2.2}  // Draw top edge
-        L ${x + size / 2.2},${y + size / 2.2}  // Draw right edge
-        L ${x - size / 2.2},${y + size / 2.2}  // Draw bottom edge
-        A ${cornerRadius},${cornerRadius} 0 0 1 ${
-          x - size / 2.2 - extension + cornerRadius
-        },${y - size / 2.2 + cornerRadius}  // Draw rounded left top corner
-        Z  // Close the path
-      `
-          .replace(/\/\/.*$/gm, "")
-          .trim(); // Remove comments and trim whitespace
-        path.setAttribute("d", d);
-        this._svg.appendChild(path);
-      },
-    });
-  }
-
-  // _basicCircleLeftTopEdge(args: BasicFigureDrawArgs): void {
+  // _basicLeaf(args: BasicFigureDrawArgs): void {
   //   const { size, x, y } = args;
-  //   const radius = size / 2;
-
+  //   const extension = size / 4; // Adjust the extension as needed
+  //   const cornerRadius = size / 10; // Adjust the corner radius as needed
+  
+  //   // Adjusted offsets for positioning
+  //   const offsetX = size /2;
+  //   const offsetY = size/2 ;
+  
   //   this._rotateFigure({
   //     ...args,
   //     draw: () => {
-  //       const circle = document.createElementNS(
-  //         "http://www.w3.org/2000/svg",
-  //         "circle"
-  //       );
+  //       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-  //       // Adjust the attributes to position the circle with a flat top left corner
-  //       circle.setAttribute("cx", String(x + radius)); // Adjusted to radius for left edge
-  //       circle.setAttribute("cy", String(y + radius)); // Adjusted to radius for top edge
-  //       circle.setAttribute("r", String(radius)); // Use radius as the size
+  //     // Adjust the path commands for the SVG
+  //     const d = `
+  //       M ${x - size / 2.2 - extension + offsetX},${y - size / 2.2 - extension + offsetY}  // Move to the top left corner
+  //       L ${x + size / 2.2 + offsetX},${y - size / 2.2 + offsetY}  // Draw top edge
+  //       L ${x + size / 2.2 + offsetX},${y + size / 2.2 + offsetY}  // Draw right edge
+  //       L ${x - size / 2.2 + offsetX},${y + size / 2.2 + offsetY}  // Draw bottom edge
+  //       A ${cornerRadius},${cornerRadius} 0 0 1 ${x - size / 2.2 - extension + cornerRadius + offsetX},${y - size / 2.2 + cornerRadius - extension + offsetY}  // Draw rounded left top corner
+  //       Z  // Close the path
+  //     `
+  //       .replace(/\/\/.*$/gm, "")  // Remove comments from the path string
+  //       .trim(); // Trim any extra spaces
 
-  //       this._svg.appendChild(circle);
+  //     path.setAttribute("d", d);
+  //     this._svg.appendChild(path);
   //     },
   //   });
   // }
+  
 
   _basicCircleLeftTopEdge(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
@@ -290,23 +272,6 @@ export default class QRCornerDot {
     });
   }
 
-  // _basicExtendedSquare(args: BasicFigureDrawArgs): void {
-  //   const { size, x, y } = args;
-  //   const extension = size / 6;  // Adjust the extension as needed
-
-  //   this._rotateFigure({
-  //     ...args,
-  //     draw: () => {
-  //       const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  //       rect.setAttribute("x", String(x - extension));
-  //       rect.setAttribute("y", String(y - extension));
-  //       rect.setAttribute("width", String(size + extension));
-  //       rect.setAttribute("height", String(size + extension));
-  //       this._svg.appendChild(rect);
-  //     }
-  //   });
-  // }
-
   _basicDiamond(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
 
@@ -330,41 +295,39 @@ export default class QRCornerDot {
       },
     });
   }
-
   _basicStar(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
 
     const numPoints = 5;
     const outerRadius = size / 2;
-    const innerRadius = outerRadius / 2.5;
+    const innerRadius = outerRadius / 1.8;
     const step = Math.PI / numPoints;
 
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        const points = [];
-        for (let i = 0; i < 2 * numPoints; i++) {
-          const radius = i % 2 === 0 ? outerRadius : innerRadius;
-          const angle = i * step;
-          const px = x + size / 2 + radius * Math.cos(angle);
-          const py = y + size / 2 + radius * Math.sin(angle);
-          points.push(`${px},${py}`);
-        }
+    // Adjust starting angle to ensure the star is upright
+    const startAngle = -Math.PI / 2;
 
-        const polygon = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "polygon"
-        );
-        polygon.setAttribute("points", points.join(" "));
-        this._svg.appendChild(polygon);
-      },
-    });
+    const points = [];
+    for (let i = 0; i < 2 * numPoints; i++) {
+      const radius = i % 2 === 0 ? outerRadius : innerRadius;
+      const angle = startAngle + i * step; // Adjusted angle
+      const px = x + size / 2 + radius * Math.cos(angle);
+      const py = y + size / 2 + radius * Math.sin(angle);
+      points.push(`${px},${py}`);
+    }
+
+    const polygon = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polygon"
+    );
+    polygon.setAttribute("points", points.join(" "));
+
+    this._svg.appendChild(polygon);
   }
 
   _basicPlus(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
 
-    const thickness = size / 5;
+    const thickness = size / 2.5;
     const halfThickness = thickness / 2;
     const halfSize = size / 2;
 
@@ -408,47 +371,43 @@ export default class QRCornerDot {
     const halfThickness = thickness / 2;
     const halfSize = size / 2;
 
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        const group = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "g"
-        );
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
 
-        const verticalRect = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect"
-        );
-        verticalRect.setAttribute("x", String(x + halfSize - halfThickness));
-        verticalRect.setAttribute("y", String(y));
-        verticalRect.setAttribute("width", String(thickness));
-        verticalRect.setAttribute("height", String(size));
-        verticalRect.setAttribute(
-          "transform",
-          `rotate(45 ${x + halfSize} ${y + halfSize})`
-        );
-        verticalRect.setAttribute("rx", String(thickness / 2)); // add this line
-        group.appendChild(verticalRect);
+    // Vertical line (rect)
+    const verticalRect = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    verticalRect.setAttribute("x", String(x + halfSize - halfThickness));
+    verticalRect.setAttribute("y", String(y));
+    verticalRect.setAttribute("width", String(thickness));
+    verticalRect.setAttribute("height", String(size));
+    verticalRect.setAttribute("rx", String(thickness / 2)); // rounded corners
+    verticalRect.setAttribute(
+      "transform",
+      `rotate(45 ${x + halfSize} ${y + halfSize})`
+    );
+    group.appendChild(verticalRect);
 
-        const horizontalRect = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "rect"
-        );
-        horizontalRect.setAttribute("x", String(x));
-        horizontalRect.setAttribute("y", String(y + halfSize - halfThickness));
-        horizontalRect.setAttribute("width", String(size));
-        horizontalRect.setAttribute("height", String(thickness));
-        horizontalRect.setAttribute(
-          "transform",
-          `rotate(45 ${x + halfSize} ${y + halfSize})`
-        );
-        horizontalRect.setAttribute("rx", String(thickness / 2)); // add this line
-        group.appendChild(horizontalRect);
+    // Horizontal line (rect)
+    const horizontalRect = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    horizontalRect.setAttribute("x", String(x));
+    horizontalRect.setAttribute("y", String(y + halfSize - halfThickness));
+    horizontalRect.setAttribute("width", String(size));
+    horizontalRect.setAttribute("height", String(thickness));
+    horizontalRect.setAttribute("rx", String(thickness / 2)); // rounded corners
 
-        this._svg.appendChild(group);
-      },
-    });
+    // Rotate the horizontal rect by 45 degrees to form the cross
+    horizontalRect.setAttribute(
+      "transform",
+      `rotate(45 ${x + halfSize} ${y + halfSize})`
+    );
+    group.appendChild(horizontalRect);
+
+    this._svg.appendChild(group);
   }
 
   _basicRhombus(args: BasicFigureDrawArgs): void {
@@ -458,6 +417,101 @@ export default class QRCornerDot {
     const halfThickness = thickness / 2;
     const halfSize = size / 2;
 
+    // Vertical rectangle
+    const verticalRect = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    verticalRect.setAttribute("x", String(x + halfSize - halfThickness));
+    verticalRect.setAttribute("y", String(y));
+    verticalRect.setAttribute("width", String(thickness));
+    verticalRect.setAttribute("height", String(size));
+
+    // Top triangle
+    const verticalTopTriangle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polygon"
+    );
+    verticalTopTriangle.setAttribute(
+      "points",
+      `
+            ${x + halfSize - halfThickness},${y}
+            ${x + halfSize},${y - halfThickness}
+            ${x + halfSize + halfThickness},${y}
+        `
+    );
+
+    // Bottom triangle
+    const verticalBottomTriangle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polygon"
+    );
+    verticalBottomTriangle.setAttribute(
+      "points",
+      `
+            ${x + halfSize - halfThickness},${y + size}
+            ${x + halfSize},${y + size + halfThickness}
+            ${x + halfSize + halfThickness},${y + size}
+        `
+    );
+
+    // Horizontal rectangle
+    const horizontalRect = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "rect"
+    );
+    horizontalRect.setAttribute("x", String(x));
+    horizontalRect.setAttribute("y", String(y + halfSize - halfThickness));
+    horizontalRect.setAttribute("width", String(size));
+    horizontalRect.setAttribute("height", String(thickness));
+
+    // Left triangle
+    const horizontalLeftTriangle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polygon"
+    );
+    horizontalLeftTriangle.setAttribute(
+      "points",
+      `
+            ${x},${y + halfSize - halfThickness}
+            ${x - halfThickness},${y + halfSize}
+            ${x},${y + halfSize + halfThickness}
+        `
+    );
+
+    // Right triangle
+    const horizontalRightTriangle = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "polygon"
+    );
+    horizontalRightTriangle.setAttribute(
+      "points",
+      `
+            ${x + size},${y + halfSize - halfThickness}
+            ${x + size + halfThickness},${y + halfSize}
+            ${x + size},${y + halfSize + halfThickness}
+        `
+    );
+
+    // Add all elements to the SVG container
+    this._svg.appendChild(verticalRect);
+    this._svg.appendChild(verticalTopTriangle);
+    this._svg.appendChild(verticalBottomTriangle);
+    this._svg.appendChild(horizontalRect);
+    this._svg.appendChild(horizontalLeftTriangle);
+    this._svg.appendChild(horizontalRightTriangle);
+  }
+
+  _basicSquareGrid(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+
+    const boxSize = size / 2.5; // Size of each box
+    const gap = size / 12; // Gap between the boxes
+
+    // The positions for the boxes
+    const startX = size / 16; // Start X position (left side of the grid)
+    const startY = size / 16; // Start Y position (top side of the grid)
+
     this._rotateFigure({
       ...args,
       draw: () => {
@@ -466,86 +520,51 @@ export default class QRCornerDot {
           "g"
         );
 
-        // group.setAttribute("transform", `rotate(45 ${x + halfSize} ${y + halfSize})`);
-
-        const verticalRect = document.createElementNS(
+        // Create the top-left box
+        const box1 = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "rect"
         );
-        verticalRect.setAttribute("x", String(x + halfSize - halfThickness));
-        verticalRect.setAttribute("y", String(y));
-        verticalRect.setAttribute("width", String(thickness));
-        verticalRect.setAttribute("height", String(size));
+        box1.setAttribute("x", String(x + startX));
+        box1.setAttribute("y", String(y + startY));
+        box1.setAttribute("width", String(boxSize));
+        box1.setAttribute("height", String(boxSize));
+        group.appendChild(box1);
 
-        const verticalTopTriangle = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "polygon"
-        );
-        verticalTopTriangle.setAttribute(
-          "points",
-          `
-          ${x + halfSize - halfThickness},${y}
-          ${x + halfSize},${y - halfThickness}
-          ${x + halfSize + halfThickness},${y}
-        `
-        );
-
-        const verticalBottomTriangle = document.createElementNS(
-          "http://www.w3.org/2000/svg",
-          "polygon"
-        );
-        verticalBottomTriangle.setAttribute(
-          "points",
-          `
-          ${x + halfSize - halfThickness},${y + size}
-          ${x + halfSize + halfThickness},${y + size}
-          ${x + halfSize},${y + size + halfThickness}
-        `
-        );
-
-        group.appendChild(verticalRect);
-        group.appendChild(verticalTopTriangle);
-        group.appendChild(verticalBottomTriangle);
-
-        const horizontalRect = document.createElementNS(
+        // Create the top-right box (shifted by the box size + gap)
+        const box2 = document.createElementNS(
           "http://www.w3.org/2000/svg",
           "rect"
         );
-        horizontalRect.setAttribute("x", String(x));
-        horizontalRect.setAttribute("y", String(y + halfSize - halfThickness));
-        horizontalRect.setAttribute("width", String(size));
-        horizontalRect.setAttribute("height", String(thickness));
+        box2.setAttribute("x", String(x + startX + boxSize + gap));
+        box2.setAttribute("y", String(y + startY));
+        box2.setAttribute("width", String(boxSize));
+        box2.setAttribute("height", String(boxSize));
+        group.appendChild(box2);
 
-        const horizontalLeftTriangle = document.createElementNS(
+        // Create the bottom-left box (shifted down by the box size + gap)
+        const box3 = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "polygon"
+          "rect"
         );
-        horizontalLeftTriangle.setAttribute(
-          "points",
-          `
-          ${x},${y + halfSize - halfThickness}
-          ${x - halfThickness},${y + halfSize}
-          ${x},${y + halfSize + halfThickness}
-        `
-        );
+        box3.setAttribute("x", String(x + startX));
+        box3.setAttribute("y", String(y + startY + boxSize + gap));
+        box3.setAttribute("width", String(boxSize));
+        box3.setAttribute("height", String(boxSize));
+        group.appendChild(box3);
 
-        const horizontalRightTriangle = document.createElementNS(
+        // Create the bottom-right box (shifted by both box size + gap horizontally and vertically)
+        const box4 = document.createElementNS(
           "http://www.w3.org/2000/svg",
-          "polygon"
+          "rect"
         );
-        horizontalRightTriangle.setAttribute(
-          "points",
-          `
-          ${x + size},${y + halfSize - halfThickness}
-          ${x + size + halfThickness},${y + halfSize}
-          ${x + size},${y + halfSize + halfThickness}
-        `
-        );
+        box4.setAttribute("x", String(x + startX + boxSize + gap));
+        box4.setAttribute("y", String(y + startY + boxSize + gap));
+        box4.setAttribute("width", String(boxSize));
+        box4.setAttribute("height", String(boxSize));
+        group.appendChild(box4);
 
-        group.appendChild(horizontalRect);
-        group.appendChild(horizontalLeftTriangle);
-        group.appendChild(horizontalRightTriangle);
-
+        // Append the group of boxes to the SVG
         this._svg.appendChild(group);
       },
     });
@@ -575,9 +594,9 @@ export default class QRCornerDot {
     this._basicRoundedSquareRightBottomEdge({ x, y, size, rotation });
   }
 
-  _drawLead({ x, y, size, rotation }: DrawArgs): void {
-    this._basicLeaf({ x, y, size, rotation });
-  }
+  // _drawLead({ x, y, size, rotation }: DrawArgs): void {
+  //   this._basicLeaf({ x, y, size, rotation });
+  // }
 
   _drawCircleLeftTopEdge({ x, y, size, rotation }: DrawArgs): void {
     this._basicCircleLeftTopEdge({ x, y, size, rotation });
@@ -595,5 +614,8 @@ export default class QRCornerDot {
 
   _drawRhombus({ x, y, size, rotation }: DrawArgs): void {
     this._basicRhombus({ x, y, size, rotation });
+  }
+  _drawSquareGrid({ x, y, size, rotation }: DrawArgs): void {
+    this._basicSquareGrid({ x, y, size, rotation });
   }
 }

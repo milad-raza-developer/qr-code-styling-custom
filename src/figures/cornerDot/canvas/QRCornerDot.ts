@@ -27,6 +27,9 @@ export default class QRCornerDot {
     let drawFunction;
 
     switch (type) {
+      case cornerDotTypes.squareGrid:
+        drawFunction = this._drawSquareGrid;
+        break;
       case cornerDotTypes.square:
         drawFunction = this._drawSquare;
         break;
@@ -49,8 +52,11 @@ export default class QRCornerDot {
       case cornerDotTypes.diamond:
         drawFunction = this._drawDiamond;
         break;
-      case cornerDotTypes.leaf:
-        drawFunction = this._drawLeaf;
+      // case cornerDotTypes.leaf:
+      //   drawFunction = this._drawLeaf;
+      //   break;
+      case cornerDotTypes.rhombus:
+        drawFunction = this._drawRhombus;
         break;
       case cornerDotTypes.leftTopCircle:
         drawFunction = this._drawCircleLeftTopEdge;
@@ -150,7 +156,7 @@ export default class QRCornerDot {
 
   _basicRoundedSquareRightBottomEdge(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
-    const radius = size / 5; // Adjust the radius as needed
+    const radius = size / 3; // Adjust the radius as needed
 
     this._rotateFigure({
       ...args,
@@ -197,35 +203,44 @@ export default class QRCornerDot {
     });
   }
 
-  _basicLeaf(args: BasicFigureDrawArgsCanvas): void {
-    const { size, context } = args;
-    const extension = size / 4; // Adjust the extension as needed
-    const cornerRadius = size / 10; // Adjust the corner radius as needed
-
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        context.beginPath();
-        context.moveTo(-size / 2.2 - extension, -size / 2.2 - extension); // Start at the top left corner
-        context.lineTo(size / 2.2, -size / 2.2); // Draw top edge
-        context.lineTo(size / 2.2, size / 2.2); // Draw right edge
-        context.lineTo(-size / 2.2, size / 2.2); // Draw bottom edge
-
-        // Draw rounded left top corner
-        context.arc(
-          -size / 2.2 - extension + cornerRadius,
-          -size / 2.2 + cornerRadius - extension,
-          cornerRadius,
-          Math.PI,
-          Math.PI * 1.5
-        );
-
-        context.closePath();
-
-        context.fill();
-      },
-    });
-  }
+  // _basicLeaf(args: BasicFigureDrawArgsCanvas): void {
+  //   const { size, context } = args;
+  //   const extension = size / 4; // Adjust the extension as needed
+  //   const cornerRadius = size / 10; // Adjust the corner radius as needed
+  
+  //   // Move the leaf downwards and to the right by modifying the starting coordinates
+  //   const offsetX = size / 9; // Change this value to control how much to move it horizontally
+  //   const offsetY = size / 9; // Change this value to control how much to move it vertically
+  
+  //   this._rotateFigure({
+  //     ...args,
+  //     draw: () => {
+  //       context.beginPath();
+  //       context.moveTo(
+  //         -size / 2.2 - extension + offsetX, // Apply horizontal shift
+  //         -size / 2.2 - extension + offsetY // Apply vertical shift
+  //       ); // Start at the top left corner
+  //       context.lineTo(size / 2.2 + offsetX, -size / 2.2 + offsetY); // Draw top edge
+  //       context.lineTo(size / 2.2 + offsetX, size / 2.2 + offsetY); // Draw right edge
+  //       context.lineTo(-size / 2.2 + offsetX, size / 2.2 + offsetY); // Draw bottom edge
+  
+  //       // Draw rounded left top corner
+  //       context.arc(
+  //         -size / 2.2 - extension + cornerRadius + offsetX, // Apply horizontal shift
+  //         -size / 2.2 + cornerRadius - extension + offsetY, // Apply vertical shift
+  //         cornerRadius,
+  //         Math.PI,
+  //         Math.PI * 1.5
+  //       );
+  
+  //       context.closePath();
+  
+  //       context.fill();
+  //     },
+  //   });
+  // }
+  
+  
 
   _basicCircleLeftTopEdge(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
@@ -290,48 +305,52 @@ export default class QRCornerDot {
       draw: () => {
         const halfSize = size / 2;
 
-        // Draw the full rounded square
         context.beginPath();
 
         // Move to the starting point of the top-left corner
-        context.moveTo(-halfSize, -halfSize + cornerSize);
+        context.moveTo(-halfSize + radius, -halfSize);
 
         // Draw the top-left corner
-        context.lineTo(-halfSize + radius, -halfSize);
         context.arcTo(
           -halfSize,
           -halfSize,
           -halfSize,
           -halfSize + radius,
+          radius
+        );
+
+        // Draw the left side
+        context.lineTo(-halfSize, halfSize - radius);
+
+        // Draw the bottom-left corner
+        context.arcTo(
+          -halfSize,
+          halfSize,
+          -halfSize + radius,
+          halfSize,
+          radius
+        );
+
+        // Draw the bottom side
+        context.lineTo(halfSize - cornerSize, halfSize);
+
+        // Flat bottom-right corner
+        context.lineTo(halfSize - cornerSize, halfSize);
+
+        // Draw the right side up to the bottom-right corner
+        context.lineTo(halfSize, halfSize - cornerSize);
+
+        // Draw the top-right corner
+        context.arcTo(
+          halfSize,
+          -halfSize,
+          halfSize - radius,
+          -halfSize,
           radius
         );
 
         // Draw the top side
-        context.lineTo(halfSize - radius, -halfSize);
-        context.arcTo(
-          halfSize,
-          -halfSize,
-          halfSize,
-          -halfSize + radius,
-          radius
-        );
-
-        // Draw the right side
-        context.lineTo(halfSize, halfSize - cornerSize);
-
-        // Draw the flat right-bottom corner
-        context.lineTo(halfSize, halfSize);
-        context.lineTo(halfSize - cornerSize, halfSize);
-
-        // Draw the bottom side
-        context.lineTo(-halfSize + radius, halfSize);
-        context.arcTo(
-          -halfSize,
-          halfSize,
-          -halfSize,
-          halfSize - radius,
-          radius
-        );
+        context.lineTo(-halfSize + radius, -halfSize);
 
         context.closePath();
         // context.fillStyle = '#000'; // Set color for the rounded square
@@ -370,73 +389,175 @@ export default class QRCornerDot {
     });
   }
 
-  _basicStar(args: BasicFigureDrawArgsCanvas): void {
-    const { size, context } = args;
+_basicStar(args: BasicFigureDrawArgsCanvas): void {
+    const { size, x, y, context } = args;
 
-    const numPoints = 5;
-    const outerRadius = size / 2;
-    const innerRadius = outerRadius / 2.5;
-    const step = Math.PI / numPoints;
+    const numPoints = 5; // Number of points on the star
+    const outerRadius = size / 2; // Outer radius of the star
+    const innerRadius = outerRadius / 1.8; // Inner radius for inner vertices
+    const step = Math.PI / numPoints; // Angle step between points
 
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        context.beginPath();
-        for (let i = 0; i < 2 * numPoints; i++) {
-          const radius = i % 2 === 0 ? outerRadius : innerRadius;
-          const angle = i * step;
-          context.lineTo(radius * Math.cos(angle), radius * Math.sin(angle));
+    // Starting angle adjustment to ensure the star is upright
+    const startAngle = -Math.PI / 2;
+
+    context.beginPath();
+
+    // Draw the star by alternating between outer and inner points
+    for (let i = 0; i < 2 * numPoints; i++) {
+        const radius = i % 2 === 0 ? outerRadius : innerRadius;
+        const angle = startAngle + i * step; // Adjust angle to start from top
+        const px = x + size / 2 + radius * Math.cos(angle); // X-coordinate
+        const py = y + size / 2 + radius * Math.sin(angle); // Y-coordinate
+
+        if (i === 0) {
+            context.moveTo(px, py); // Move to the first point
+        } else {
+            context.lineTo(px, py); // Draw line to the next point
         }
-        context.closePath();
-      },
-    });
-  }
+    }
 
-  _basicPlus(args: BasicFigureDrawArgsCanvas): void {
-    const { size, context } = args;
+    context.closePath();
+    context.stroke(); // Outline the star
+    context.fill(); // Fill the star if needed
+}
 
-    const thickness = size / 5;
-    const halfThickness = thickness / 2;
-    const halfSize = size / 2;
 
-    this._rotateFigure({
-      ...args,
-      draw: () => {
-        context.beginPath();
-        context.rect(-halfThickness, -halfSize, thickness, size); // vertical rectangle
-        context.rect(-halfSize, -halfThickness, size, thickness); // horizontal rectangle
-        context.closePath();
-      },
-    });
-  }
+_basicPlus(args: BasicFigureDrawArgsCanvas): void {
+  const { size, context } = args;
+
+  const thickness = size / 2.5; // Thickness of the cross lines
+  const halfSize = size / 2; // Half size for positioning the lines
+  
+  this._rotateFigure({
+    ...args,
+    draw: () => {
+      context.beginPath();
+
+      // Set the line width for the plus lines to make them bolder
+      context.lineWidth = thickness; 
+      // context.lineJoin = 'round'; // Ensure the line joins are rounded
+      // context.lineCap = 'round';  // Make the line ends rounded
+
+      // Draw the horizontal line (left to right)
+      context.moveTo(-halfSize, 0); // Starting point: left side
+      context.lineTo(halfSize, 0);  // Ending point: right side
+
+      // Draw the vertical line (top to bottom)
+      context.moveTo(0, -halfSize); // Starting point: top side
+      context.lineTo(0, halfSize);  // Ending point: bottom side
+
+      context.stroke(); // Outline the plus shape with the adjusted thickness
+      context.closePath();
+    },
+  });
+}
+
 
   _basicCross(args: BasicFigureDrawArgsCanvas): void {
     const { size, context } = args;
-    const lineWidth = size / 4; // Width of the cross lines
-    const halfSize = size / 2; // Half the size of the cross
-
+    
+    const thickness = size / 2.5; // Thickness of the cross lines
+    const halfSize = size / 2.5; // Reduce the size of the canvas (width and height of the cross)
+    const cornerRadius = thickness / 2; // Radius for rounded corners
+    
     this._rotateFigure({
-        ...args,
-        draw: () => {
-            context.save(); // Save the current state
-            context.translate(0, 0); // Move to the center
-            context.rotate(Math.PI / 4); // Rotate 45 degrees (pi/4 radians)
-
-            context.beginPath();
-            
-            // Draw the horizontal line of the cross
-            context.rect(-halfSize, -lineWidth / 2, size, lineWidth);
-
-            // Draw the vertical line of the cross
-            context.rect(-lineWidth / 2, -halfSize, lineWidth, size);
-
-            context.fillStyle = '#000'; // Set c//olor for the cross
-            context.fill();
-
-            context.restore(); // Restore the state
-        },
+      ...args,
+      draw: () => {
+        context.beginPath();
+    
+        // Set the line width for the cross lines to make them bolder
+        context.lineWidth = thickness; 
+        context.lineJoin = 'round'; // Ensure the line joins are rounded
+        context.lineCap = 'round';  // Make the line ends rounded
+    
+        // Draw the first diagonal line (top-left to bottom-right)
+        context.moveTo(-halfSize + cornerRadius, -halfSize + cornerRadius); // Starting point: top-left with a rounded corner
+        context.lineTo(halfSize - cornerRadius, halfSize - cornerRadius);   // Ending point: bottom-right with a rounded corner
+    
+        // Draw the second diagonal line (top-right to bottom-left)
+        context.moveTo(halfSize - cornerRadius, -halfSize + cornerRadius);  // Starting point: top-right with a rounded corner
+        context.lineTo(-halfSize + cornerRadius, halfSize - cornerRadius);  // Ending point: bottom-left with a rounded corner
+          
+        context.stroke(); // Outline the cross with the adjusted thickness and rounded corners
+        context.closePath();
+      },
     });
   }
+
+  _basicRhombus(args: BasicFigureDrawArgsCanvas): void {
+    const { size, context } = args;
+    
+    const thickness = size / 2.5; // Thickness of the cross lines
+    const halfSize = size / 2.5; // Reduce the size of the canvas (width and height of the cross)
+    const cornerRadius = thickness / 2; // Radius for rounded corners
+    
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        context.beginPath();
+    
+        // Set the line width for the cross lines to make them bolder
+        context.lineWidth = thickness; 
+        context.lineJoin = 'round'; // Ensure the line joins are rounded
+        context.lineCap = 'round';  // Make the line ends rounded
+    
+        // Draw the first diagonal line (top-left to bottom-right)
+        context.moveTo(-halfSize + cornerRadius, -halfSize + cornerRadius); // Starting point: top-left with a rounded corner
+        context.lineTo(halfSize - cornerRadius, halfSize - cornerRadius);   // Ending point: bottom-right with a rounded corner
+    
+        // Draw the second diagonal line (top-right to bottom-left)
+        context.moveTo(halfSize - cornerRadius, -halfSize + cornerRadius);  // Starting point: top-right with a rounded corner
+        context.lineTo(-halfSize + cornerRadius, halfSize - cornerRadius);  // Ending point: bottom-left with a rounded corner
+          
+        context.stroke(); // Outline the cross with the adjusted thickness and rounded corners
+        context.closePath();
+      },
+    });
+  }
+
+  _basicSquareGrid(args: BasicFigureDrawArgsCanvas): void {
+    const { size, context } = args;
+  
+    const boxSize = size / 2.5; // Size of each box
+    const gap = size / 12; // Gap between the boxes
+  
+    // The positions for the boxes
+    const startX = -size / 2.2; // Start X position (left side of the grid)
+    const startY = -size / 2.2; // Start Y position (top side of the grid)
+  
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        context.beginPath();
+  
+        // Set the line width for the box edges
+        context.lineWidth = 2;
+        context.lineJoin = 'miter'; // Use sharp corners for the boxes
+        context.lineCap = 'butt';  // Use flat line ends
+  
+        // Draw the top-left box
+        context.rect(startX, startY, boxSize, boxSize);
+  
+        // Draw the top-right box (shifted by the box size + gap)
+        context.rect(startX + boxSize + gap, startY, boxSize, boxSize);
+  
+        // Draw the bottom-left box (shifted down by the box size + gap)
+        context.rect(startX, startY + boxSize + gap, boxSize, boxSize);
+  
+        // Draw the bottom-right box (shifted by both box size + gap horizontally and vertically)
+        context.rect(startX + boxSize + gap, startY + boxSize + gap, boxSize, boxSize);
+  
+        context.closePath();
+      },
+    });
+  }
+  
+  
+  
+  
+  
+  
+  
 
   _drawDot({ x, y, size, context, rotation }: DrawArgsCanvas): void {
     this._basicDot({ x, y, size, context, rotation });
@@ -476,8 +597,11 @@ export default class QRCornerDot {
     this._basicRoundedSquareRightBottomEdge({ x, y, size, context, rotation });
   }
 
-  _drawLeaf({ x, y, size, context, rotation }: DrawArgsCanvas): void {
-    this._basicLeaf({ x, y, size, context, rotation });
+  // _drawLeaf({ x, y, size, context, rotation }: DrawArgsCanvas): void {
+  //   this._basicLeaf({ x, y, size, context, rotation });
+  // }
+  _drawRhombus({ x, y, size, context, rotation }: DrawArgsCanvas): void {
+    this._basicRhombus({ x, y, size, context, rotation });
   }
 
   _drawCircleLeftTopEdge({
@@ -498,5 +622,8 @@ export default class QRCornerDot {
     rotation,
   }: DrawArgsCanvas): void {
     this._basicCircleRightBottomEdge({ x, y, size, context, rotation });
+  }
+  _drawSquareGrid({ x, y, size, context, rotation }: DrawArgsCanvas): void {
+    this._basicSquareGrid({ x, y, size, context, rotation });
   }
 }

@@ -3,9 +3,42 @@ export interface UnknownObject {
   [key: string]: any;
 }
 
-export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded" | "star" ;
-export type CornerDotType = "dot" | "square" | "star" | "plus" | "square-rounded" | "leaf" | "circle-left-top" | "circle-right-bottom" | "square-right-bottom" | "diamond" | "cross" | "rhombus"
-export type CornerSquareType = "dot" | "square" | "extra-rounded" | "dotted-square" | "right-bottom-square" | "left-top-square" | "circle-in-square" | "circle-left-top" | "circle-right-bottom" | "peanut" | "paragonal";
+export type DotType =
+  | "dots"
+  | "rounded"
+  | "classy"
+  | "classy-rounded"
+  | "square"
+  | "extra-rounded"
+  | "wave"
+  | "pixelated"
+  | "pixelated-rounded";
+export type CornerDotType =
+  | "dot"
+  | "square"
+  | "star"
+  | "plus"
+  | "square-rounded"
+  | "leaf"
+  | "circle-left-top"
+  | "circle-right-bottom"
+  | "square-right-bottom"
+  | "diamond"
+  | "cross"
+  | "rhombus"
+  | "square-grid";
+export type CornerSquareType =
+  | "dot"
+  | "square"
+  | "extra-rounded"
+  | "dotted-square"
+  | "right-bottom-square"
+  | "left-top-square"
+  | "circle-in-square"
+  | "circle-left-top"
+  | "circle-right-bottom"
+  | "peanut"
+  | "paragonal";
 export type Extension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
@@ -91,7 +124,11 @@ export interface QRCode {
   isDark(row: number, col: number): boolean;
   createImgTag(cellSize?: number, margin?: number): string;
   createSvgTag(cellSize?: number, margin?: number): string;
-  createSvgTag(opts?: { cellSize?: number; margin?: number; scalable?: boolean }): string;
+  createSvgTag(opts?: {
+    cellSize?: number;
+    margin?: number;
+    scalable?: boolean;
+  }): string;
   createDataURL(cellSize?: number, margin?: number): string;
   createTableTag(cellSize?: number, margin?: number): string;
   createASCII(cellSize?: number, margin?: number): string;
