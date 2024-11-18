@@ -39,7 +39,7 @@ export type CornerSquareType =
   | "circle-right-bottom"
   | "peanut"
   | "paragonal";
-export type Extension = "svg" | "png" | "jpeg" | "webp";
+export type Extension = "svg" | "png" | "jpeg" | "webp" | "pdf";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
 

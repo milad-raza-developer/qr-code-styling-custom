@@ -7,15 +7,19 @@
   <body>
     <div id="canvas"></div>
     <div id="canvas2"></div>
+    <button id="btn-svg">Download SVG</button>
+    <button id="btn-png">Download PNG</button>
+    <button id="btn-pdf">Download PDF</button>
+    <button id="btn-jpg">Download JPG</button>
     <script type="text/javascript">
       const options = {
-        width: 500,
-        height: 500,
+        width: 200,
+        height: 200,
         data: "h",
         image:
           "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
         dotsOptions: {
-          type: "square-rounded",
+          type: "rounded",
           gradient: {
             type: "linear", //radial,
             rotation: Math.PI / 2,
@@ -27,7 +31,7 @@
           },
         },
         cornersSquareOptions: {
-          type: "circle-in-square",
+          type: "peanut",
           gradient: {
             type: "linear",
             rotation: Math.PI * 0.2,
@@ -44,7 +48,7 @@
           },
         },
         cornersDotOptions: {
-          type: "square-right-bottom",
+          type: "star",
         },
         imageOptions: {
           crossOrigin: "anonymous",
@@ -60,7 +64,29 @@
       qrCode.append(document.getElementById("canvas"));
       qrCode2.append(document.getElementById("canvas2"));
 
-      // qrCode2.download()
+      function updateQRCodeStyling(type) {
+        qrCode.update({ ...options, type });
+      }
+
+      // Button event listeners
+      document.getElementById("btn-svg").addEventListener("click", () => {
+        updateQRCodeStyling("svg");
+        qrCode.download({ name: "qr-code", extension: "svg" });
+      });
+
+      document.getElementById("btn-png").addEventListener("click", () => {
+        updateQRCodeStyling("canvas");
+        qrCode.download({ name: "qr-code", extension: "png" });
+      });
+
+      document.getElementById("btn-jpg").addEventListener("click", () => {
+        updateQRCodeStyling("canvas");
+        qrCode.download({ name: "qr-code", extension: "jpeg" });
+      });
+      document.getElementById("btn-pdf").addEventListener("click", () => {
+        updateQRCodeStyling("canvas");
+        qrCode.download({ name: "qr-code", extension: "pdf" });
+      });
     </script>
   </body>
 </html>
