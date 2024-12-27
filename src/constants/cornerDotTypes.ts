@@ -13,5 +13,5 @@ export default {
   plus: "plus",
   cross: "cross",
   rhombus: "rhombus",
-  leaf: "leaf",
+  leaf: "leaf"
 } as CornerDotTypes;

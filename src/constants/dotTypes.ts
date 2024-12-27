@@ -6,6 +6,5 @@ export default {
   classy: "classy",
   classyRounded: "classy-rounded",
   square: "square",
-  extraRounded: "extra-rounded",
-  star: "star",
+  extraRounded: "extra-rounded"
 } as DotTypes;

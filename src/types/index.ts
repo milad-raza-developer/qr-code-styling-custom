@@ -1,18 +1,12 @@
+import { DOMWindow, JSDOM } from "jsdom";
+import nodeCanvas from "canvas";
+
 export interface UnknownObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
-export type DotType =
-  | "dots"
-  | "rounded"
-  | "classy"
-  | "classy-rounded"
-  | "square"
-  | "extra-rounded"
-  | "wave"
-  | "pixelated"
-  | "pixelated-rounded";
+export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
 export type CornerDotType =
   | "dot"
   | "square"
@@ -39,9 +33,12 @@ export type CornerSquareType =
   | "circle-right-bottom"
   | "peanut"
   | "paragonal";
-export type Extension = "svg" | "png" | "jpeg" | "webp" | "pdf";
+export type FileExtension = "svg" | "png" | "jpeg" | "webp";
 export type GradientType = "radial" | "linear";
 export type DrawType = "canvas" | "svg";
+export type ShapeType = "square" | "circle";
+
+export type Window = DOMWindow;
 
 export type Gradient = {
   type: GradientType;
@@ -70,6 +67,10 @@ export interface CornerSquareTypes {
 
 export interface DrawTypes {
   [key: string]: DrawType;
+}
+
+export interface ShapeTypes {
+  [key: string]: ShapeType;
 }
 
 export type TypeNumber =
@@ -124,11 +125,7 @@ export interface QRCode {
   isDark(row: number, col: number): boolean;
   createImgTag(cellSize?: number, margin?: number): string;
   createSvgTag(cellSize?: number, margin?: number): string;
-  createSvgTag(opts?: {
-    cellSize?: number;
-    margin?: number;
-    scalable?: boolean;
-  }): string;
+  createSvgTag(opts?: { cellSize?: number; margin?: number; scalable?: boolean }): string;
   createDataURL(cellSize?: number, margin?: number): string;
   createTableTag(cellSize?: number, margin?: number): string;
   createASCII(cellSize?: number, margin?: number): string;
@@ -137,17 +134,21 @@ export interface QRCode {
 
 export type Options = {
   type?: DrawType;
+  shape?: ShapeType;
   width?: number;
   height?: number;
   margin?: number;
   data?: string;
   image?: string;
+  nodeCanvas?: typeof nodeCanvas;
+  jsdom?: typeof JSDOM;
   qrOptions?: {
     typeNumber?: TypeNumber;
     mode?: Mode;
     errorCorrectionLevel?: ErrorCorrectionLevel;
   };
   imageOptions?: {
+    saveAsBlob?: boolean;
     hideBackgroundDots?: boolean;
     imageSize?: number;
     crossOrigin?: string;
@@ -157,6 +158,7 @@ export type Options = {
     type?: DotType;
     color?: string;
     gradient?: Gradient;
+    roundSize?: boolean;
   };
   cornersSquareOptions?: {
     type?: CornerSquareType;
@@ -169,16 +171,17 @@ export type Options = {
     gradient?: Gradient;
   };
   backgroundOptions?: {
+    round?: number;
     color?: string;
     gradient?: Gradient;
   };
 };
 
-export type FilterFunction = (i: number, j: number) => boolean;
+export type FilterFunction = (row: number, col: number) => boolean;
 
 export type DownloadOptions = {
   name?: string;
-  extension?: Extension;
+  extension?: FileExtension;
 };
 
 export type DrawArgs = {
@@ -204,16 +207,6 @@ export type RotateFigureArgs = {
   draw: () => void;
 };
 
-export type DrawArgsCanvas = DrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type BasicFigureDrawArgsCanvas = BasicFigureDrawArgs & {
-  context: CanvasRenderingContext2D;
-};
-
-export type RotateFigureArgsCanvas = RotateFigureArgs & {
-  context: CanvasRenderingContext2D;
-};
-
 export type GetNeighbor = (x: number, y: number) => boolean;
+
+export type ExtensionFunction = (svg: SVGElement, options: Options) => void;

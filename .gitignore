@@ -1,3 +1,13 @@
-node_modules
-dist
-.env
+# IDEA
+.idea
+
+# Lib folder
+/lib
+
+# npm modules
+/node_modules
+
+# Tests coverage results
+/coverage
+
+.DS_Store
