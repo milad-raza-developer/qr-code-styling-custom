@@ -10,6 +10,7 @@ import { FileExtension, QRCode, Options, DownloadOptions, ExtensionFunction, Win
 import qrcode from "qrcode-generator";
 import getMimeType from "../tools/getMimeType";
 import { Canvas as NodeCanvas, Image } from "canvas";
+import jsPDF from "jspdf";
 
 declare const window: Window;
 
@@ -76,7 +77,7 @@ export default class QRCodeStyling {
       const svg = this._svg;
       const xml = new this._window.XMLSerializer().serializeToString(svg);
       const svg64 = btoa(xml);
-      const image64 = `data:${getMimeType('svg')};base64,${svg64}`;
+      const image64 = `data:${getMimeType("svg")};base64,${svg64}`;
 
       if (this._options.nodeCanvas?.loadImage) {
         return this._options.nodeCanvas.loadImage(image64).then((image: Image) => {
@@ -196,7 +197,7 @@ export default class QRCodeStyling {
     } else {
       return new Promise((resolve) => {
         const canvas = element;
-        if ('toBuffer' in canvas) {
+        if ("toBuffer" in canvas) {
           // Different call is needed to prevent error TS2769: No overload matches this call.
           if (mimeType === "image/png") {
             resolve(canvas.toBuffer(mimeType));
@@ -207,8 +208,8 @@ export default class QRCodeStyling {
           } else {
             throw Error("Unsupported extension");
           }
-        } else if ('toBlob' in canvas) {
-          (canvas).toBlob(resolve, mimeType, 1);
+        } else if ("toBlob" in canvas) {
+          canvas.toBlob(resolve, mimeType, 1);
         }
       });
     }
@@ -248,6 +249,30 @@ export default class QRCodeStyling {
       source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
       const url = `data:${getMimeType(extension)};charset=utf-8,${encodeURIComponent(source)}`;
       downloadURI(url, `${name}.svg`);
+    } else if (extension.toLowerCase() === "pdf") {
+      const canvas = element as HTMLCanvasElement;
+      const dataURL = canvas.toDataURL("image/png");
+    
+      const pdf = new jsPDF(); // Default orientation is 'portrait'
+    
+      // PDF page dimensions in mm
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+    
+      // Adjust the QR code size (50% of the smaller dimension of the page)
+      const qrCodeSize = Math.min(pageWidth, pageHeight) * 0.5; // You can adjust this ratio as needed
+      const qrCodeX = (pageWidth - qrCodeSize) / 2; // X-coordinate to center the QR code
+      const qrCodeY = (pageHeight - qrCodeSize) / 2; // Y-coordinate to center the QR code
+    
+      // Adjust canvas size to match the QR code size
+      const imgWidth = qrCodeSize; 
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+    
+      // Add the QR code image to the PDF at the calculated position
+      pdf.addImage(dataURL, "PNG", qrCodeX, qrCodeY, imgWidth, imgHeight);
+    
+      // Save the PDF with the QR code
+      pdf.save(`${name}.pdf`);
     } else {
       const url = (element as HTMLCanvasElement).toDataURL(getMimeType(extension));
       downloadURI(url, `${name}.${extension}`);

@@ -10,6 +10,7 @@
     <div id="canvas3"></div>
     <button id="btn-svg">Download SVG</button>
     <button id="btn-png">Download PNG</button>
+    <button id="btn-pdf">Download PDF</button>
     <script type="text/javascript">
       const options1 = {
         width: 300,
@@ -27,7 +28,7 @@
           color: "#4267b2"
         },
         cornersSquareOptions: {
-          type: "peanut",
+          type: "circle-in-square",
           color: "#4267b2"
         },
         backgroundOptions: {
@@ -207,6 +208,11 @@
       document.getElementById("btn-png").addEventListener("click", () => {
         updateQRCodeStyling("canvas");
         qrCode1.download({ name: "qr-code", extension: "png" });
+      });
+
+      document.getElementById("btn-pdf").addEventListener("click", () => {
+        updateQRCodeStyling("canvas");
+        qrCode1.download({ name: "qr-code", extension: "pdf" });
       });
 
       // qrCode1.download({ name: 'qr-codes/Vanbilloen'+'-color', extension: 'svg' })

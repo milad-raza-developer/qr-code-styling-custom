@@ -33,6 +33,9 @@ export default class QRCornerSquare {
       case cornerSquareTypes.leftTopSquare:
         drawFunction = this._drawRoundedSquareLeftTopEdge;
         break;
+        case cornerSquareTypes.circleInSquare:
+          drawFunction = this._drawCircleInSquare;
+          break;
       case cornerSquareTypes.leftTopCircle:
         drawFunction = this._drawCircleLeftTopFlat;
         break;
@@ -513,6 +516,38 @@ export default class QRCornerSquare {
     });
   }
 
+  _basicCircleInSquare(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+    const borderWidth = size / 4; // Adjust the border width as needed
+    const circleRadius = size / 2 - borderWidth / 2;
+  
+    this._rotateFigure({
+      ...args,
+      draw: () => {
+        this._element = this._window.document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "path"
+        );
+        this._element.setAttribute("clip-rule", "evenodd");
+        this._element.setAttribute("fill", "none"); // No fill for the square and circle
+        this._element.setAttribute(
+          "d",
+          `M ${x} ${y}` +
+            `h ${size}` +
+            `v ${size}` +
+            `h ${-size}` +
+            `z` + // Outer square border
+            `M ${x + size / 2}, ${y + size / 2}` +
+            `m -${circleRadius}, 0` +
+            `a ${circleRadius},${circleRadius} 0 1,0 ${2 * circleRadius},0` +
+            `a ${circleRadius},${circleRadius} 0 1,0 -${2 * circleRadius},0` // Circle in the center
+        );
+      }
+    });
+  }
+  
+  
+
   _drawDot({ x, y, size, rotation }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation });
   }
@@ -535,6 +570,10 @@ export default class QRCornerSquare {
 
   _drawRoundedSquareLeftTopEdge({ x, y, size, rotation }: DrawArgs): void {
     this._basicRoundedSquareLeftTopEdge({ x, y, size, rotation });
+  }
+
+  _drawCircleInSquare({ x, y, size, rotation }: DrawArgs): void {
+    this._basicCircleInSquare({ x, y, size, rotation });
   }
 
   _drawCircleLeftTopFlat({ x, y, size, rotation }: DrawArgs): void {
