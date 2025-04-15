@@ -13,30 +13,32 @@
     <button id="btn-pdf">Download PDF</button>
     <script type="text/javascript">
       const options1 = {
-        width: 300,
-        height: 300,
+        width: 200,
+        height: 200,
         type: "svg",
         data: "https://www.facebook.com/",
         image: "https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg",
         dotsOptions: {
           color: "#000000",
-          type: "rounded",
+          type: "cube",
           roundSize: false
         },
         cornersDotOptions: {
-          type: "dot",
+          type: "square",
           color: "#4267b2"
         },
         cornersSquareOptions: {
-          type: "circle-in-square",
+          type: "square",
           color: "#4267b2"
         },
         backgroundOptions: {
-          color: "#e9ebee"
+          color: "#ffffff"
         },
         imageOptions: {
           crossOrigin: "anonymous",
-          margin: 20
+          margin: 7,
+          hideBackgroundDots: true,
+          imageSize: 0.7
         }
       };
       // const options2 = {
@@ -202,16 +204,19 @@
       // Button event listeners
       document.getElementById("btn-svg").addEventListener("click", () => {
         updateQRCodeStyling("svg");
+        console.log("qrCode1 svg", qrCode1);
         qrCode1.download({ name: "qr-code", extension: "svg" });
       });
 
       document.getElementById("btn-png").addEventListener("click", () => {
         updateQRCodeStyling("canvas");
+        console.log("qrCode1 png", qrCode1);
         qrCode1.download({ name: "qr-code", extension: "png" });
       });
 
       document.getElementById("btn-pdf").addEventListener("click", () => {
         updateQRCodeStyling("canvas");
+        console.log("qrCode1 pdf", qrCode1);
         qrCode1.download({ name: "qr-code", extension: "pdf" });
       });
 

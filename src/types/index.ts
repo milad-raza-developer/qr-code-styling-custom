@@ -6,7 +6,24 @@ export interface UnknownObject {
   [key: string]: any;
 }
 
-export type DotType = "dots" | "rounded" | "classy" | "classy-rounded" | "square" | "extra-rounded";
+export type DotType =
+  | "dots"
+  | "rounded"
+  | "classy"
+  | "classy-rounded"
+  | "square"
+  | "extra-rounded"
+  | "star"
+  | "heart"
+  | "diamond"
+  | "cube"
+  | "rounded-plus"
+  | "plus"
+  | "cross"
+  | "rounded-cross"
+  | "vertical-bar"
+  | "vertical-bar-rounded"
+  | "horizontal-bar";
 export type CornerDotType =
   | "dot"
   | "square"
