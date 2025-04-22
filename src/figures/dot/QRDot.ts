@@ -42,15 +42,12 @@ export default class QRDot {
       case dotTypes.heart:
         drawFunction = this._drawHeart;
         break;
-      // case dotTypes.cube:
-      //   drawFunction = this._drawCube;
-      //   break;
       case dotTypes.plus:
         drawFunction = this._drawPlus;
         break;
-      case dotTypes.roundedPlus:
-        drawFunction = this._drawRoundedPlus;
-        break;
+      // case dotTypes.roundedPlus:
+      //   drawFunction = this._drawRoundedPlus;
+      //   break;
       case dotTypes.cross:
         drawFunction = this._drawCross;
         break;
@@ -59,6 +56,9 @@ export default class QRDot {
         break;
       case dotTypes.horizontalBar:
         drawFunction = this._drawHorizontalBar;
+        break;
+      case dotTypes.concaveSquare:
+        drawFunction = this._drawConcaveSquare;
         break;
       case dotTypes.square:
       default:
@@ -268,23 +268,6 @@ export default class QRDot {
     });
   }
 
-  //   _basicCube(args: BasicFigureDrawArgs): void {
-  //     const { size, x, y, gap = 10 } = args; // Adding a gap parameter with a default value of 10
-
-  //     this._rotateFigure({
-  //         ...args,
-  //         draw: () => {
-  //             this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "rect");
-
-  //             this._element.setAttribute("x", (x + gap).toString()); // Adjusting the x position with gap
-  //             this._element.setAttribute("y", (y + gap).toString()); // Adjusting the y position with gap
-  //             this._element.setAttribute("width", size.toString());
-  //             this._element.setAttribute("height", size.toString());
-  //             this._element.setAttribute("fill", "black"); // Ensures visibility
-  //         }
-  //     });
-  // }
-
   _basicPlus(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
     const thickness = size * 0.2; // 20% thickness
@@ -319,89 +302,49 @@ export default class QRDot {
     });
   }
 
-  _basicRoundedPlus(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
-    const thickness = size * 0.1; // 20% thickness
-    const radius = thickness / 2; // Corner radius
-    const center = size / 2;
+  // _basicRoundedPlus(args: BasicFigureDrawArgs): void {
+  //   const { size, x, y } = args;
+  //   const thickness = size * 0.1; // 20% thickness
+  //   const radius = thickness / 2; // Corner radius
+  //   const center = size / 2;
 
-    this._rotateFigure({
-      ...args,
-      rotation: 0,
-      draw: () => {
-        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+  //   this._rotateFigure({
+  //     ...args,
+  //     rotation: 0,
+  //     draw: () => {
+  //       this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
 
-        // Rounded plus path with perfect corners
-        const path = `
-              M ${x + radius},${y + center - thickness / 2}
-              H ${x + size - radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x + size},${y + center - thickness / 2 + radius}
-              V ${y + center + thickness / 2 - radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x + size - radius},${y + center + thickness / 2}
-              H ${x + center + thickness / 2 + radius}
-              V ${y + size - radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x + center + thickness / 2},${y + size}
-              H ${x + center - thickness / 2}
-              A ${radius} ${radius}, 0, 0, 1, ${x + center - thickness / 2 - radius},${y + size - radius}
-              V ${y + center + thickness / 2 + radius}
-              H ${x + radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x},${y + center + thickness / 2 - radius}
-              V ${y + center - thickness / 2 + radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x + radius},${y + center - thickness / 2}
-              H ${x + center - thickness / 2 - radius}
-              V ${y + radius}
-              A ${radius} ${radius}, 0, 0, 1, ${x + center - thickness / 2},${y}
-              H ${x + center + thickness / 2}
-              A ${radius} ${radius}, 0, 0, 1, ${x + center + thickness / 2 + radius},${y + radius}
-              V ${y + center - thickness / 2 - radius}
-              Z
-          `;
+  //       // Rounded plus path with perfect corners
+  //       const path = `
+  //             M ${x + radius},${y + center - thickness / 2}
+  //             H ${x + size - radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + size},${y + center - thickness / 2 + radius}
+  //             V ${y + center + thickness / 2 - radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + size - radius},${y + center + thickness / 2}
+  //             H ${x + center + thickness / 2 + radius}
+  //             V ${y + size - radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + center + thickness / 2},${y + size}
+  //             H ${x + center - thickness / 2}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + center - thickness / 2 - radius},${y + size - radius}
+  //             V ${y + center + thickness / 2 + radius}
+  //             H ${x + radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x},${y + center + thickness / 2 - radius}
+  //             V ${y + center - thickness / 2 + radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + radius},${y + center - thickness / 2}
+  //             H ${x + center - thickness / 2 - radius}
+  //             V ${y + radius}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + center - thickness / 2},${y}
+  //             H ${x + center + thickness / 2}
+  //             A ${radius} ${radius}, 0, 0, 1, ${x + center + thickness / 2 + radius},${y + radius}
+  //             V ${y + center - thickness / 2 - radius}
+  //             Z
+  //         `;
 
-        this._element.setAttribute("d", path.replace(/\s+/g, " ").trim());
-        this._element.setAttribute("stroke-linejoin", "round");
-      }
-    });
-  }
-
-  _basicCross(args: BasicFigureDrawArgs): void {
-    const { size, x, y } = args;
-    const thickness = size * 0.2; // 20% thickness
-    const center = size / 2;
-    const angle = Math.PI / 4; // 45 degrees
-
-    this._rotateFigure({
-      ...args,
-      rotation: 0, // No base rotation
-      draw: () => {
-        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
-
-        // Calculate the diagonal arm dimensions
-        const armLength = Math.sqrt(2 * size * size) / 2;
-        const halfThickness = thickness / 2;
-
-        // Cross path (two diagonal rectangles)
-        const path = `
-              M ${x + center - halfThickness * Math.cos(angle)},${y + center - halfThickness * Math.sin(angle)}
-              L ${x + center + (armLength - halfThickness) * Math.cos(angle)},${y + center + (armLength - halfThickness) * Math.sin(angle)}
-              L ${x + center + (armLength + halfThickness) * Math.cos(angle)},${y + center + (armLength + halfThickness) * Math.sin(angle)}
-              L ${x + center + halfThickness * Math.cos(angle)},${y + center + halfThickness * Math.sin(angle)}
-              L ${x + size - halfThickness * Math.cos(angle)},${y + size - halfThickness * Math.sin(angle)}
-              L ${x + size - (armLength + halfThickness) * Math.cos(angle)},${y + size - (armLength + halfThickness) * Math.sin(angle)}
-              L ${x + size - (armLength - halfThickness) * Math.cos(angle)},${y + size - (armLength - halfThickness) * Math.sin(angle)}
-              L ${x + center + halfThickness * Math.cos(angle)},${y + center + halfThickness * Math.sin(angle)}
-              L ${x + center - (armLength - halfThickness) * Math.cos(angle)},${y + center - (armLength - halfThickness) * Math.sin(angle)}
-              L ${x + center - (armLength + halfThickness) * Math.cos(angle)},${y + center - (armLength + halfThickness) * Math.sin(angle)}
-              L ${x + halfThickness * Math.cos(angle)},${y + halfThickness * Math.sin(angle)}
-              L ${x + (armLength - halfThickness) * Math.cos(angle)},${y + (armLength - halfThickness) * Math.sin(angle)}
-              L ${x + (armLength + halfThickness) * Math.cos(angle)},${y + (armLength + halfThickness) * Math.sin(angle)}
-              Z
-          `;
-
-        this._element.setAttribute("d", path.replace(/\s+/g, " ").trim());
-        this._element.setAttribute("stroke-linejoin", "round");
-      }
-    });
-  }
+  //       this._element.setAttribute("d", path.replace(/\s+/g, " ").trim());
+  //       this._element.setAttribute("stroke-linejoin", "round");
+  //     }
+  //   });
+  // }
 
   _basicVerticalBar(args: BasicFigureDrawArgs): void {
     const { size, x, y } = args;
@@ -457,8 +400,87 @@ export default class QRDot {
         this._element.setAttribute("stroke-linejoin", "round");
       }
     });
-}
+  }
 
+  _basicCross(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+
+    const spacingRatio = 0.35;
+    const adjustedSize = size * (1 - spacingRatio);
+    const radius = adjustedSize * 0.2; // arc depth
+    const offset = (size - adjustedSize) / 2;
+    const posX = x + offset;
+    const posY = y + offset;
+
+    const cx = posX + adjustedSize / 2;
+    const cy = posY + adjustedSize / 2;
+
+    this._rotateFigure({
+      ...args,
+      x: posX,
+      y: posY,
+      size: adjustedSize,
+      rotation: (Math.random() - 0.5) * 0.25, // subtle rotation
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+        const path = `
+          M ${posX}, ${cy}
+          A ${radius} ${radius}, 0, 0, 1, ${cx}, ${posY}
+          A ${radius} ${radius}, 0, 0, 1, ${posX + adjustedSize}, ${cy}
+          A ${radius} ${radius}, 0, 0, 1, ${cx}, ${posY + adjustedSize}
+          A ${radius} ${radius}, 0, 0, 1, ${posX}, ${cy}
+          Z
+        `;
+
+        this._element.setAttribute("d", path.replace(/\s+/g, " ").trim());
+      }
+    });
+  }
+
+  _basicConcaveSquare(args: BasicFigureDrawArgs): void {
+    const { size, x, y } = args;
+
+    const spacingRatio = 0.25;
+    const adjustedSize = size * (1 - spacingRatio);
+    const offset = (size - adjustedSize) / 2;
+
+    const spikeLength = adjustedSize * 0.2; // how far the corners flare out
+    const posX = x + offset - spikeLength / 2;
+    const posY = y + offset - spikeLength / 2;
+    const cx = posX + adjustedSize / 2;
+    const cy = posY + adjustedSize / 2;
+
+    const top = posY;
+    const bottom = posY + adjustedSize;
+    const left = posX;
+    const right = posX + adjustedSize;
+
+    this._rotateFigure({
+      ...args,
+      x: posX,
+      y: posY,
+      size: adjustedSize,
+      rotation: 0,
+      draw: () => {
+        this._element = this._window.document.createElementNS("http://www.w3.org/2000/svg", "path");
+
+        const path = `
+          M ${cx}, ${top - spikeLength}                       
+          L ${right - spikeLength}, ${top + spikeLength}
+          L ${right + spikeLength}, ${cy}
+          L ${right - spikeLength}, ${bottom - spikeLength}
+          L ${cx}, ${bottom + spikeLength}
+          L ${left + spikeLength}, ${bottom - spikeLength}
+          L ${left - spikeLength}, ${cy}
+          L ${left + spikeLength}, ${top + spikeLength}
+          Z
+        `;
+
+        this._element.setAttribute("d", path.replace(/\s+/g, " ").trim());
+      }
+    });
+  }
 
   _drawDot({ x, y, size }: DrawArgs): void {
     this._basicDot({ x, y, size, rotation: 0 });
@@ -629,27 +651,26 @@ export default class QRDot {
   _drawHeart({ x, y, size }: DrawArgs): void {
     this._basicHeart({ x, y, size, rotation: 0 });
   }
-  // _drawCube({ x, y, size }: DrawArgs): void {
-  //   this._basicCube({ x, y, size, rotation: 0 });
-  // }
 
   _drawPlus({ x, y, size }: DrawArgs): void {
     this._basicPlus({ x, y, size, rotation: 0 });
   }
 
-  _drawRoundedPlus({ x, y, size }: DrawArgs): void {
-    this._basicRoundedPlus({ x, y, size, rotation: 0 });
-  }
+  // _drawRoundedPlus({ x, y, size }: DrawArgs): void {
+  //   this._basicRoundedPlus({ x, y, size, rotation: 0 });
+  // }
+
   _drawCross({ x, y, size }: DrawArgs): void {
     this._basicCross({ x, y, size, rotation: 0 });
   }
 
   _drawVerticalBar({ x, y, size }: DrawArgs): void {
-    
     this._basicVerticalBar({ x, y, size, rotation: 0 });
   }
   _drawHorizontalBar({ x, y, size }: DrawArgs): void {
-    
     this._basicHorizontalBar({ x, y, size, rotation: 0 });
+  }
+  _drawConcaveSquare({ x, y, size }: DrawArgs): void {
+    this._basicConcaveSquare({ x, y, size, rotation: 0 });
   }
 }

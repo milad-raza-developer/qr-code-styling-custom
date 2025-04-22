@@ -10,12 +10,9 @@ export default {
   star: "star",
   diamond: "diamond",
   heart: "heart",
-  cube: "cube",
-  // roundedPlus: "rounded-plus",
   plus: "plus",
-  // cross: "cross",
-  // roundedCross: "rounded-cross",
+  cross: "cross",
   verticalBar: "vertical-bar",
-  // verticalBarRounded: "vertical-bar-rounded",
-  horizontalBar: "horizontal-bar"
+  horizontalBar: "horizontal-bar",
+  concaveSquare: "concave-square"
 } as DotTypes;
